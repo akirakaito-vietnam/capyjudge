@@ -296,16 +296,33 @@ def problem_tag(request):
 class RequestTimeMixin(object):
     def get_requests_data(self):
         logger = logging.getLogger(self.log_name)
-        log_filename = logger.handlers[0].baseFilename
+        
+        log_filename = None
+        for handler in logger.handlers:
+            if hasattr(handler, 'baseFilename'):
+                log_filename = handler.baseFilename
+                break
+        
+        if not log_filename:
+            logging.warning(f"No file handler found for logger {self.log_name}")
+            return []
+        
         requests = []
-
-        with open(log_filename, "r") as f:
-            for line in f:
-                try:
-                    info = json.loads(line)
-                    requests.append(info)
-                except:
-                    continue
+        try:
+            with open(log_filename, "r") as f:
+                for line in f:
+                    try:
+                        info = json.loads(line)
+                        requests.append(info)
+                    except json.JSONDecodeError:
+                        continue
+        except FileNotFoundError:
+            logging.warning(f"Log file {log_filename} not found")
+            return []
+        except Exception as e:
+            logging.error(f"Error reading log file: {e}")
+            return []
+            
         return requests
 
 
