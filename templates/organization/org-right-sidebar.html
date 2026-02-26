@@ -54,13 +54,6 @@
             <i class="fa fa-calendar-plus"></i>{{ _('Add contest') }}</a>
         </div>
       {% endif %}
-      {% if is_member %}
-        <div class="link-row">
-          <a href="{{ organization_subdomain }}" target="_blank">
-            <i class="fa fa-globe"></i>{{_('Subdomain')}}
-          </a>
-        </div>
-      {% endif %}
       {% if is_member and not is_admin %}
         <div class="link-row" style="color: red;">
           <form method="post" action="{{ url('leave_organization', organization.id, organization.slug) }}">
