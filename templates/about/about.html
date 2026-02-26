@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block body %}
+  {% if request.organization %}
+    {{ request.organization.about|markdown|reference|str|safe }}
+  {% else %}
+    <h4>
+      Capy Judge
+    </h4>
+  {% endif %}
+{% endblock %}
